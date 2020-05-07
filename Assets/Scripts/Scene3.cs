@@ -8,51 +8,88 @@ public class Scene3 : MonoBehaviour
 {
     public TextMeshProUGUI textDisplay;
     public GameObject continueButton;
+    public GameObject nextLevelButton;
     public GameObject dialogBox;
     public GameObject Picture1;
-    private int index = 1;
+    public static int stage = 1;
+    public static int index_part = 1;
+    public static int situation = 0;
+
+    IEnumerator wait()
+    {
+        yield return new WaitForSeconds(2);
+    }
 
     public void NextSentence()
     {
-        //textDisplay.enabled = false;
         continueButton.SetActive(false);
-        //dialogBox.SetActive(false);
+        print("stage : " + stage);
 
-        if (index == 2)
+        if(stage == 5)
         {
-            textDisplay.SetText("What next step should you take?");
-            index++;
-            continueButton.SetActive(true);
+            SceneManager.LoadScene("Scene3");
         }
-        //index = 3. continue.
-        if (index == 3)
+
+        if (stage == 4)
         {
-            index++;
+            stage++;
+            textDisplay.SetText("Now go back to the medicine cabinet and select something to wrap the wound");
+            continueButton.SetActive(true);
+            index_part = 3;
+        }
+
+        //stage = 3. continue.
+        if (stage == 3)
+        {
+            print("running nextsentence index = 3 ");
+            stage++;
             SceneManager.LoadScene("question2");
             //Instantiate(Picture1, new Vector3(0, 0, 0), Quaternion.identity);
             //Picture1.SetActive(true);
         }
+
+        if (stage == 2)
+        {
+            print("running nextsentence index = 2 ");
+            textDisplay.SetText("What next step should you take?");
+            stage++;
+            continueButton.SetActive(true);
+        }
+
     }
 
     private void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
-            {
+            {                
+                if (hit.transform.name == "antiseptic" && index_part == 2)
+                {
+                    print("You hit antiseptic and the index_part = " + index_part);
+                    textDisplay.SetText("Great! You're almost there!");
 
-                if (hit.transform.name == "dirtyCloth")
-                {
-                    print("You hit dirty cloth");
                 }
-                if (hit.transform.name == "cleanCloth")
+                if (hit.transform.name == "cleanCloth" && index_part == 1)
                 {
+                    print("index_part : " + index_part);
                     print("yout hit clean cloth");
                     textDisplay.SetText("You are right. We should clean the person’s wound with the clean cloth first.");
                     continueButton.SetActive(true);
-                    index = 2;
+                    stage = 2;
+                }
+                if (hit.transform.name == "bandageRoll" && index_part == 3)
+                {
+                    print("you hit bandageRoll and the index_part = " + index_part);
+                    textDisplay.SetText("Objective accomplished! Level cleared!");
+                    continueButton.SetActive(false);
+                    nextLevelButton.SetActive(true);
+                    stage = 1;
+                    index_part = 1;
+                    situation = 0;
                 }
             }
         }        

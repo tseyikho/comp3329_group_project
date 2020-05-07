@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneChanger : MonoBehaviour
 {
 
-    public Dialog dialog;
+    public Dialoglv2 dialog;      
 
     public void SceneQuestion1()
     {
@@ -22,5 +23,12 @@ public class SceneChanger : MonoBehaviour
     {   
         StartCoroutine(wait());
         SceneManager.LoadScene("Scene2");
+    }
+
+    public void question2CorrectAnser()
+    {
+        StartCoroutine(wait());
+        Scene3.index_part = 2;
+        SceneManager.LoadScene("Scene3");
     }
 }
